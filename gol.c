@@ -4,19 +4,6 @@
  * Swarthmore PA
  */
 
-//Takes in command line arguments. Opens and reads a file. Simulates
-//the game of life based on whether a cell is live or not. 
-//Plays gol in different ways based on user input. 
-
-//NOTE: Visi-animation doesn't close properly after executing the simulation//
-
-/*
- * To run:
- * ./gol file1.txt  0  # run with config file file1.txt, do not print board
- * ./gol file1.txt  1  # run with config file file1.txt, ascii animation
- * ./gol file1.txt  2  # run with config file file1.txt, ParaVis animation
- *
- */
 #include <pthreadGridVisi.h>
 #include <stdlib.h>
 #include <stdio.h>
@@ -44,15 +31,6 @@
  */
 static int total_live = 0;
 
-/* This struct represents all the data you need to keep track of your GOL
- * simulation.  Rather than passing individual arguments into each function,
- * we'll pass in everything in just one of these structs.
- * this is passed to play_gol, the main gol playing loop
- *
- * NOTE: You will need to use the provided fields here, but you'll also
- *       need to add additional fields. (note the nice field comments!)
- * NOTE: DO NOT CHANGE THE NAME OF THIS STRUCT!!!!
- */
 struct gol_data {
 
     // NOTE: DO NOT CHANGE the names of these 4 fields (but USE them)
@@ -65,15 +43,12 @@ struct gol_data {
     
 
     /* fields used by ParaVis library (when run in OUTPUT_VISI mode). */
-    // NOTE: DO NOT CHANGE their definitions BUT USE these fields
     visi_handle handle;
     color3 *image_buff;
 };
 
 
 /****************** Function Prototypes **********************/
-// TODO: A few starting point function prototypes.
-//       You will need to implement these functions.
 
 /* the main gol game playing loop (prototype must match this) */
 void play_gol(struct gol_data *data);
@@ -112,7 +87,6 @@ int main(int argc, char **argv) {
     struct gol_data data;
     double secs;
     struct timeval start_time, stop_time;
-    // TODO: all additional local variables should be added up here
 
     /* check number of command line arguments */
     if (argc < 3) {
@@ -123,7 +97,6 @@ int main(int argc, char **argv) {
 
     /* Initialize game state (all fields in data) from information
      * read from input file */
-    // TODO: you need to complete the implementation of this function
     ret = init_game_data_from_args(&data, argv);
     if (ret != 0) {
         printf("Initialization error: file %s, mode %s\n", argv[1], argv[2]);
@@ -152,12 +125,9 @@ int main(int argc, char **argv) {
         play_gol(&data);
         ret = gettimeofday(&stop_time, NULL);
 
-        // clear the previous print_board output from the terminal:
-        // (NOTE: you can comment out this line while debugging)
+        // clear the previous print_board output from the terminal
         if (system("clear")) { perror("clear"); exit(1); }
 
-        // NOTE: DO NOT modify this call to print_board at the end
-        //       (it's to help us with grading your output)
         print_board(&data, data.iters);
     }
     else {  // OUTPUT_VISI: run with ParaVisi animation
@@ -167,9 +137,6 @@ int main(int argc, char **argv) {
         run_animation(data.handle, data.iters);
     }
 
-    // NOTE: you need to determine how and where to add timing code
-    //       in your program to measure the total time to play the given
-    //       number of rounds played.
     if (data.output_mode != OUTPUT_VISI) {
         
         double seconds = stop_time.tv_sec - start_time.tv_sec;
@@ -177,7 +144,6 @@ int main(int argc, char **argv) {
         secs = seconds + micros;
 
         /* Print the total runtime, in seconds. */
-        // NOTE: do not modify these calls to fprintf
         fprintf(stdout, "Total time: %0.3f seconds\n", secs);
         fprintf(stdout, "Number of live cells after %d rounds: %d\n\n",
                 data.iters, total_live);
@@ -247,9 +213,6 @@ void update_colors(struct gol_data *data) {
     for (i = 0; i < r; i++) {
         for (j = 0; j < c; j++) {
             index = i*c + j;
-            // translate row index to y-coordinate value
-            // in the image buffer, r,c=0,0 is assumed to be the _lower_ left
-            // in the grid, r,c=0,0 is _upper_ left.
             buff_i = (r - (i+1))*c + j;
 
             // update animation buffer
@@ -262,25 +225,6 @@ void update_colors(struct gol_data *data) {
     }
 }
 
-
-// TODO: Complete the implementation of the important application
-//       functions started for you below.
-//
-//       As always, add your own additional helper function(s)
-//       for implementing partial functionality of these big
-//       parts of the application, apply good top-down design
-//       in your solution, and use incremental implementation
-//       and testing as you go.
-
-/* initialize the gol game state from command line arguments
- *       argv[1]: name of file to read game config state from
- *       argv[2]: run mode value
- * data: pointer to gol_data struct to initialize
- * argv: command line args
- *       argv[1]: name of file to read game config state from
- *       argv[2]: run mode
- * returns: 0 on success, 1 on error
- */
 int init_game_data_from_args(struct gol_data *data, char **argv) {
 
     FILE *infile;
@@ -375,9 +319,6 @@ int init_game_data_from_args(struct gol_data *data, char **argv) {
  */
 void play_gol(struct gol_data *data) {
 
-    // TODO: implement the main gol playing functionality here
-    // you MUST have some helper functions (called by this function)
-    // that implement parts of the larger game playing functionality
 
     //  at the end of each round of GOL, determine if there is an
     //  animation step to take based on the output_mode,
@@ -417,16 +358,6 @@ void play_gol(struct gol_data *data) {
 
 }
 
-/* Print the board to the terminal.
- *   data: gol game specific data
- *   round: the current round number
- *
- * TODO: add in your application-specific code to test
- *       if a live or dead cell should be printed
- * NOTE: You may add extra printfs if you'd like, but please
- *       leave these fprintf calls exactly as they are to make
- *       grading easier!
- */
 void print_board(struct gol_data *data, int round) {
 
     int i, j;
@@ -452,7 +383,6 @@ void print_board(struct gol_data *data, int round) {
 
 
 /**********************************************************/
-/***** START: DO NOT MODIFY THIS CODE *****/
 /* initialize ParaVisi animation */
 int setup_animation(struct gol_data* data) {
     /* connect handle to the animation */
@@ -492,5 +422,3 @@ int connect_animation(void (*applfunc)(struct gol_data *data),
     }
     return 0;
 }
-/***** END: DO NOT MODIFY THIS CODE *****/
-/******************************************************/
