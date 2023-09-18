@@ -8,8 +8,7 @@
 #include <pthread.h>
 #include "colors.h"
 
-/****************** Definitions **********************/
-/* Three possible modes in which the GOL simulation can run */
+
 #define OUTPUT_NONE   (0)   // with no animation
 #define OUTPUT_ASCII  (1)   // with ascii animation
 #define OUTPUT_VISI   (2)   // with ParaVis animation
@@ -27,7 +26,7 @@ static int total_live = 0;
 
 struct gol_data {
 
-    // NOTE: DO NOT CHANGE the names of these 4 fields (but USE them)
+   
     int rows;  // the row dimension
     int cols;  // the column dimension
     int iters; // number of iterations to run the gol simulation
@@ -50,7 +49,6 @@ void play_gol(struct gol_data *data);
 /* init gol data from the input file and run mode cmdline args */
 int init_game_data_from_args(struct gol_data *data, char **argv);
 
-// A mostly implemented function, but a bit more for you to add.
 /* print board to the terminal (for OUTPUT_ASCII mode) */
 void print_board(struct gol_data *data, int round);
 
